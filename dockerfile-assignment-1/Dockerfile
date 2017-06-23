@@ -27,3 +27,25 @@
 # - then it needs to start container with command 'tini -- node ./bin/www'
 # - in the end you should be using FROM, RUN, WORKDIR, COPY, EXPOSE, and CMD commands
 
+FROM node:6-alpine
+
+RUN apk add --update tini
+RUN mkdir -p /usr/src/app
+
+WORKDIR /usr/src/app
+
+COPY package.json .
+RUN npm install && npm cache clean --force
+
+COPY app.js .
+COPY bin ./bin
+COPY public ./public
+COPY routes ./routes
+COPY views ./views
+
+RUN ls -lrt /usr/src/app/
+
+CMD /sbin/tini -- node ./bin/www
+
+EXPOSE 3000:80
+
