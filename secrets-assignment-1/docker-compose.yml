@@ -1,10 +1,9 @@
-version: '2'
+version: '3.3'
 
 services:
 
   drupal:
-    image: custom-drupal
-    build: .
+    image: drupal:8.2
     ports:
       - "8080:80"
     volumes:
@@ -15,8 +14,10 @@ services:
  
   postgres:
     image: postgres:9.6
+    secrets: 
+      - psql_password
     environment:
-      - POSTGRES_PASSWORD=mypasswd
+      - POSTGRES_PASSWORD_FILE=/run/secrets/psql_password
     volumes:
       - drupal-data:/var/lib/postgresql/data
 
@@ -26,3 +27,7 @@ volumes:
   drupal-profiles:
   drupal-sites:
   drupal-themes:
+
+secrets:
+  psql_password:
+    external: true
